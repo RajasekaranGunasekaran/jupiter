@@ -31,14 +31,11 @@ jobs:
       # Runs a single command using the runners shell
       - name: Trufflehog OSS
         id: trufflehog
-        uses: trufflesecurity/trufflehog@add-actions-cli-switch
+        uses: trufflesecurity/TruffleHog-Enterprise-Github-Action@main
         continue-on-error: true
         with:
-          path: ./
-          base: "${{  github.event.repository.default_branch }}"
-          head: HEAD
-          extra_args: --debug --only-verified .
-    
+          args: --fail-verified "${{  github.event.repository.default_branch }}" HEAD
+          
 
       - name: Scan status
         if: steps.trufflehog.outcome == 'failure'
