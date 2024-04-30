@@ -32,7 +32,7 @@ jobs:
       - name: Trufflehog OSS
         id: trufflehog
         uses: trufflesecurity/TruffleHog-Enterprise-Github-Action@main
-        continue-on-error: true
+        #continue-on-error: true
         with:
           args: --quiet "${{  github.event.repository.default_branch }}" HEAD  
           #filesystem password.txt HEAD
@@ -41,6 +41,6 @@ jobs:
 
       - name: Filesystem scan
         uses: trufflesecurity/TruffleHog-Enterprise-Github-Action@main
-        continue-on-error: true
+        #continue-on-error: true
         with:
           args: filesystem --directory=${{ github.workspace }} --json   
