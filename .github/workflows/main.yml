@@ -41,5 +41,5 @@ jobs:
     
 
       - name: Scan status
-        if: steps:trufflehog.outcome = 'failure'
+        if: steps.trufflehog.outcome = 'failure'
         run: exit 1
