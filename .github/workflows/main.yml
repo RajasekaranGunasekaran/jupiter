@@ -34,7 +34,7 @@ jobs:
         uses: trufflesecurity/TruffleHog-Enterprise-Github-Action@main
         continue-on-error: true
         with:
-          args: --quiet filesystem ./password.txt
+          args: --quiet filesystem password.txt HEAD
           #"${{  github.event.repository.default_branch }}" HEAD
           
 
