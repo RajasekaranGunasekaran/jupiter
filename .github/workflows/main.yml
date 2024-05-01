@@ -1,46 +1,36 @@
-# This is a basic workflow to help you get started with Actions
+name: Trufflehog Scan
 
-name: trufflehog_scan
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  trufflehog:
-    # The type of runner that the job will run on
+  trufflehog_scan:
     runs-on: ubuntu-latest
-    defaults:
-       run:
-          shell: bash
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Trufflehog OSS
-        id: trufflehog
-        uses: trufflesecurity/TruffleHog-Enterprise-Github-Action@main
-        #continue-on-error: true
-        with:
-          args: --quiet "${{  github.event.repository.default_branch }}" HEAD  
-          #filesystem password.txt HEAD
-          #"${{  github.event.repository.default_branch }}" HEAD
-          
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
 
-      - name: Filesystem scan
-        uses: trufflesecurity/TruffleHog-Enterprise-Github-Action@main
-        #continue-on-error: true
-        with:
-          args: filesystem --directory=${{ github.workspace }} --json   
+    - name: Install Trufflehog
+      run: pip install trufflehog
+
+    - name: Run Trufflehog scan
+      run: trufflehog --json . > trufflehog_report.json
+
+    # Optionally, you can save the scan results as artifacts
+    - name: Save Trufflehog scan results
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: trufflehog-results
+        path: trufflehog_report.json
